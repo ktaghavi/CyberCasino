@@ -1,0 +1,4 @@
+SELECT owners.name, pets.name
+FROM pets
+JOIN owners
+ON pets.owner_id = owners.id;
