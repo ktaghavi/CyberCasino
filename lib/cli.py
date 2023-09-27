@@ -51,6 +51,8 @@ if __name__ == "__main__":
             new_user = Users(username=name, balance=1000)
             session.add(new_user)
             session.commit()
+            user = session.query(Users).filter(Users.username == name).first()
+
         
         questions = [
         inquirer.List('games',
