@@ -7,30 +7,8 @@ import time
 
 
 from helpers import (
-    exit_program,
-    helper_1,
     slots
 )
-
-
-def main():
-    while True:
-        menu()
-        choice = input("> ")
-        if choice == "0":
-            exit_program()
-        elif choice == "1":
-            helper_1()
-        else:
-            print("Invalid choice")
-
-
-def menu():
-    print("Please select an option:")
-    print("0. Play Roullette")
-    print("1. Play Slots")
-
-
 
 if __name__ == "__main__":
     engine = create_engine('sqlite:///casino.db')
@@ -39,51 +17,53 @@ if __name__ == "__main__":
 
 
     in_game = True
-
-    while in_game:
-        print("Thanks for coming to our casino")
-        name = input("Please enter your name: ")
+    print("Thanks for coming to Cyber Casino!!!")
+    name = input("Please enter your name: ")
+    user = session.query(Users).filter(Users.username == name).first()
+    if user:
+        print(f"Welcome back to Cyber Casino {user.username}!")
+        print (f"You have a balance of {user.balance}")
+    else:
+        print("Since you're a NEW patron, we will give you a $1000 Welcome Bonus!")
+        new_user = Users(username=name, balance=1000)
+        session.add(new_user)
+        session.commit()
         user = session.query(Users).filter(Users.username == name).first()
-        if user:
-            print(f"Welcome back to Cyber Casino {user.username}!")
-        else:
-            print("Since your a lonely scum, we will start you with $1000")
-            new_user = Users(username=name, balance=1000)
-            session.add(new_user)
-            session.commit()
-            user = session.query(Users).filter(Users.username == name).first()
+   
+    while in_game:
 
-        
         questions = [
         inquirer.List('games',
                         message="What Game do you want to play?",
-                        choices=['slots', 'roullette', 'blackjack',"update username", "delete account", "exit the casino"],
+                        choices=['Slots', 'Roullette', 'Blackjack',"Update Username", "Delete Account", "Exit the Casino"],
                     ),
         ]
         answers = inquirer.prompt(questions)
         print(answers["games"])
-        if answers["games"] == "slots":
+        if answers["games"] == "Slots":
             print("Slots game loading...")
             time.sleep(1)
-            slots()
+            in_slots = True
+            while in_slots:
+                slots(session, user)
+                slots_continue = input("Play again? [y/n]: ")
+                if slots_continue == "n":
+                    in_slots = False
 
-        elif answers["games"] == "update username":
+
+        elif answers["games"] == "Update Username":
             new_name = input("Please enter your new username: ")
             user.username = new_name
             session.add(user)
             session.commit()
 
-        elif answers["games"] == "delete account":
+        elif answers["games"] == "Delete Account":
             session.delete(user)
             session.commit()
             in_game = False
 
-        elif answers["games"] == "exit the casino":
+        elif answers["games"] == "Exit the Casino":
             in_game = False
 
-        
-        # in_game = False
-
-    print("Thanks for visiting our casino")
-
-
+    
+    print("Thanks for visiting Cyber Casino!")

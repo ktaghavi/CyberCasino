@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, create_engine, ForeignKey
+from sqlalchemy import Column, Integer, String, create_engine, ForeignKey
 from sqlalchemy.orm import Session, declarative_base, relationship
 
 Base = declarative_base()
@@ -9,7 +9,7 @@ class Users(Base):
 
     id = Column(Integer, primary_key=True)
     username = Column(String)
-    balance = Column(Float)
+    balance = Column(Integer)
 
     user_games = relationship("PlayedGames", back_populates="user")
 
@@ -19,7 +19,7 @@ class PlayedGames(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users_table.id'))
     game = Column(String)
-    balance_change = Column(Float)
+    balance_change = Column(Integer)
 
     user = relationship("Users", back_populates="user_games")
 
