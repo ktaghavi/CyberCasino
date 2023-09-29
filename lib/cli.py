@@ -9,6 +9,7 @@ import time
 from helpers import (
     slots,
     roulette,
+    blackjack
 )
 
 if __name__ == "__main__":
@@ -61,7 +62,15 @@ if __name__ == "__main__":
                 if roulette_continue == "n":
                     in_roulette = False
 
-
+        elif answers["games"] == "Blackjack":
+            print("Blackjack game loading...")
+            time.sleep(1)
+            in_blackjack = True
+            while in_blackjack:
+                blackjack(session, user)
+                blackjack_continue = input("Play again? [y/n]: ")
+                if blackjack_continue == "n":
+                    in_blackjack = False
 
         elif answers["games"] == "Update Username":
             new_name = input("Please enter your new username: ")
