@@ -68,7 +68,7 @@ if __name__ == "__main__":
             in_blackjack = True
             while in_blackjack:
                 blackjack(session, user)
-                blackjack_continue = input("Play again? [y/n]: ")
+                blackjack_continue = input("Come on.. Play again! [y/n]: ")
                 if blackjack_continue == "n":
                     in_blackjack = False
 
