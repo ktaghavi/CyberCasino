@@ -72,7 +72,14 @@ def slots(session, user):
 # Roulette
 
 def roulette(session, user):
-        print("Thanks for playing Roulette!")
+        print('''Thanks for playing
+.______        ______    __    __   __       _______ .___________..___________. _______ 
+|   _  \      /  __  \  |  |  |  | |  |     |   ____||           ||           ||   ____|
+|  |_)  |    |  |  |  | |  |  |  | |  |     |  |__   `---|  |----``---|  |----`|  |__   
+|      /     |  |  |  | |  |  |  | |  |     |   __|      |  |         |  |     |   __|  
+|  |\  \----.|  `--'  | |  `--'  | |  `----.|  |____     |  |         |  |     |  |____ 
+| _| `._____| \______/   \______/  |_______||_______|    |__|         |__|     |_______|
+                                                                                       ''')
         print(f'Your balance: {user.balance}')
         bet = input('How much do you want to bet? ')
         while bet.isdigit() == False:
@@ -110,7 +117,17 @@ def roulette(session, user):
 #Blackjack
 
 def blackjack (session, user):
-    print("Thanks for playing Blackjack!")
+    print('''Thanks for playing
+.------.            _     _            _    _            _    
+|A_  _ |.          | |   | |          | |  (_)          | |   
+|( \/ ).-----.     | |__ | | __ _  ___| | ___  __ _  ___| | __
+| \  /|K /\  |     | '_ \| |/ _` |/ __| |/ / |/ _` |/ __| |/ /
+|  \/ | /  \ |     | |_) | | (_| | (__|   <| | (_| | (__|   < 
+`-----| \  / |     |_.__/|_|\__,_|\___|_|\_\ |\__,_|\___|_|\_\ 
+      |  \/ K|                            _/ |                
+      `------'                           |__/           
+
+''')
     print(f'Your balance: {user.balance}')
     bet = input('How much do you want to bet? ')
     while bet.isdigit() == False:
