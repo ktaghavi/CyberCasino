@@ -7,7 +7,8 @@ import time
 
 
 from helpers import (
-    slots
+    slots,
+    roulette,
 )
 
 if __name__ == "__main__":
@@ -35,7 +36,7 @@ if __name__ == "__main__":
         questions = [
         inquirer.List('games',
                         message="What Game do you want to play?",
-                        choices=['Slots', 'Roullette', 'Blackjack',"Update Username", "Delete Account", "Exit the Casino"],
+                        choices=['Slots', 'Roulette', 'Blackjack',"Update Username", "Delete Account", "Exit the Casino"],
                     ),
         ]
         answers = inquirer.prompt(questions)
@@ -49,6 +50,17 @@ if __name__ == "__main__":
                 slots_continue = input("Play again? [y/n]: ")
                 if slots_continue == "n":
                     in_slots = False
+
+        elif answers["games"] == "Roulette":
+            print("Roulette game loading...")
+            time.sleep(1)
+            in_roulette = True
+            while in_roulette:
+                roulette(session, user)
+                roulette_continue = input("Play again? [y/n]: ")
+                if roulette_continue == "n":
+                    in_roulette = False
+
 
 
         elif answers["games"] == "Update Username":
