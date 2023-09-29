@@ -4,8 +4,6 @@ from sqlalchemy.orm import (sessionmaker)
 from sqlalchemy import create_engine
 import inquirer
 import time
-from art import CARDS, BLANKCARD
-
 
 from helpers import (
     slots,
@@ -20,7 +18,8 @@ if __name__ == "__main__":
 
 
     in_game = True
-    print('''Welcome to 
+    print('''WELCOME TO
+    
  $$$$$$\            $$\                                  $$$$$$\                      $$\                     
 $$  __$$\           $$ |                                $$  __$$\                     \__|                    
 $$ /  \__|$$\   $$\ $$$$$$$\   $$$$$$\   $$$$$$\        $$ /  \__| $$$$$$\   $$$$$$$\ $$\ $$$$$$$\   $$$$$$\  
@@ -35,7 +34,8 @@ $$ |  $$\ $$ |  $$ |$$ |  $$ |$$   ____|$$ |            $$ |  $$\ $$  __$$ | \__
     name = input("Please enter your name: ")
     user = session.query(Users).filter(Users.username == name).first()
     if user:
-        print(f'''Welcome back to  
+        print(f'''WELCOME BACK TO
+
  $$$$$$\            $$\                                  $$$$$$\                      $$\                     
 $$  __$$\           $$ |                                $$  __$$\                     \__|                    
 $$ /  \__|$$\   $$\ $$$$$$$\   $$$$$$\   $$$$$$\        $$ /  \__| $$$$$$\   $$$$$$$\ $$\ $$$$$$$\   $$$$$$\  
@@ -68,8 +68,17 @@ $$ |  $$\ $$ |  $$ |$$ |  $$ |$$   ____|$$ |            $$ |  $$\ $$  __$$ | \__
         answers = inquirer.prompt(questions)
         print(answers["games"])
         if answers["games"] == "Slots":
-            print("Slots game loading...")
-            time.sleep(1)
+            print('''Slots game
+             __         ______    ______   _______   ______  __    __   ______                                
+/  |       /      \  /      \ /       \ /      |/  \  /  | /      \                               
+$$ |      /$$$$$$  |/$$$$$$  |$$$$$$$  |$$$$$$/ $$  \ $$ |/$$$$$$  |                              
+$$ |      $$ |  $$ |$$ |__$$ |$$ |  $$ |  $$ |  $$$  \$$ |$$ | _$$/                               
+$$ |      $$ |  $$ |$$    $$ |$$ |  $$ |  $$ |  $$$$  $$ |$$ |/    |                              
+$$ |      $$ |  $$ |$$$$$$$$ |$$ |  $$ |  $$ |  $$ $$ $$ |$$ |$$$$ |                              
+$$ |_____ $$ \__$$ |$$ |  $$ |$$ |__$$ | _$$ |_ $$ |$$$$ |$$ \__$$ |       __        __        __ 
+$$       |$$    $$/ $$ |  $$ |$$    $$/ / $$   |$$ | $$$ |$$    $$/       /  |      /  |      /  |
+$$$$$$$$/  $$$$$$/  $$/   $$/ $$$$$$$/  $$$$$$/ $$/   $$/  $$$$$$/        $$/       $$/       $$/''')
+            time.sleep(3)
             in_slots = True
             while in_slots:
                 slots(session, user)
@@ -78,7 +87,16 @@ $$ |  $$\ $$ |  $$ |$$ |  $$ |$$   ____|$$ |            $$ |  $$\ $$  __$$ | \__
                     in_slots = False
 
         elif answers["games"] == "Roulette":
-            print("Roulette game loading...")
+            print('''Roulette game
+             __         ______    ______   _______   ______  __    __   ______                                
+/  |       /      \  /      \ /       \ /      |/  \  /  | /      \                               
+$$ |      /$$$$$$  |/$$$$$$  |$$$$$$$  |$$$$$$/ $$  \ $$ |/$$$$$$  |                              
+$$ |      $$ |  $$ |$$ |__$$ |$$ |  $$ |  $$ |  $$$  \$$ |$$ | _$$/                               
+$$ |      $$ |  $$ |$$    $$ |$$ |  $$ |  $$ |  $$$$  $$ |$$ |/    |                              
+$$ |      $$ |  $$ |$$$$$$$$ |$$ |  $$ |  $$ |  $$ $$ $$ |$$ |$$$$ |                              
+$$ |_____ $$ \__$$ |$$ |  $$ |$$ |__$$ | _$$ |_ $$ |$$$$ |$$ \__$$ |       __        __        __ 
+$$       |$$    $$/ $$ |  $$ |$$    $$/ / $$   |$$ | $$$ |$$    $$/       /  |      /  |      /  |
+$$$$$$$$/  $$$$$$/  $$/   $$/ $$$$$$$/  $$$$$$/ $$/   $$/  $$$$$$/        $$/       $$/       $$/''')
             time.sleep(1)
             in_roulette = True
             while in_roulette:
@@ -88,12 +106,21 @@ $$ |  $$\ $$ |  $$ |$$ |  $$ |$$   ____|$$ |            $$ |  $$\ $$  __$$ | \__
                     in_roulette = False
 
         elif answers["games"] == "Blackjack":
-            print("Blackjack game loading...")
-            time.sleep(1)
+            print('''Blackjack game
+             __         ______    ______   _______   ______  __    __   ______                                
+/  |       /      \  /      \ /       \ /      |/  \  /  | /      \                               
+$$ |      /$$$$$$  |/$$$$$$  |$$$$$$$  |$$$$$$/ $$  \ $$ |/$$$$$$  |                              
+$$ |      $$ |  $$ |$$ |__$$ |$$ |  $$ |  $$ |  $$$  \$$ |$$ | _$$/                               
+$$ |      $$ |  $$ |$$    $$ |$$ |  $$ |  $$ |  $$$$  $$ |$$ |/    |                              
+$$ |      $$ |  $$ |$$$$$$$$ |$$ |  $$ |  $$ |  $$ $$ $$ |$$ |$$$$ |                              
+$$ |_____ $$ \__$$ |$$ |  $$ |$$ |__$$ | _$$ |_ $$ |$$$$ |$$ \__$$ |       __        __        __ 
+$$       |$$    $$/ $$ |  $$ |$$    $$/ / $$   |$$ | $$$ |$$    $$/       /  |      /  |      /  |
+$$$$$$$$/  $$$$$$/  $$/   $$/ $$$$$$$/  $$$$$$/ $$/   $$/  $$$$$$/        $$/       $$/       $$''')
+            time.sleep(3)
             in_blackjack = True
             while in_blackjack:
                 blackjack(session, user)
-                blackjack_continue = input("Come on.. Play again! [y/n]: ")
+                blackjack_continue = input("Come on Playa'.. Play again! [y/n]: ")
                 if blackjack_continue == "n":
                     in_blackjack = False
 
