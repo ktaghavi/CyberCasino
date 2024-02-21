@@ -128,6 +128,108 @@ def roulette(session, user):
 
 #Blackjack
 
+def deal_cards():
+    """Returns a card from the deck"""
+    card_rank = random.choice(list(CARDS.keys()))
+    card_value, card_ascii = CARDS[card_rank]
+    return card_value, card_ascii
+
+def calculate_scores(cards):
+    """Calculates scores for a given array of cards"""
+    if 11 in cards and sum(cards) > 21:
+        cards.remove(11)
+        cards.append(1)
+    return sum(cards)
+
+def compare(user_score, computer_score, bet, user, session):
+    user_busted = user_score > 21
+    computer_busted = computer_score > 21
+    
+    # Check for user bust first
+    if user_busted:
+        print(f"You busted with a score of {user_score}. You lost ${bet}.")
+        user.balance -= bet
+    elif computer_busted:
+        print(f"The computer busted. You win ${bet}!")
+        user.balance += bet
+    # If no one busted, then compare scores for other outcomes
+    elif user_score == computer_score:
+        print("It's a push!")
+    elif user_score > computer_score:
+        print(f"You win with a score of {user_score}. You win ${bet}!")
+        user.balance += bet
+    else:
+        print(f"The computer wins with a score of {computer_score}. You lost ${bet}.")
+        user.balance -= bet
+    
+    session.commit()
+    return f"Your new balance is ${user.balance}"
+
+def display_hand(hand):
+    """Display the hand with ASCII art side by side"""
+    card_rows = [card_ascii.split('\n') for _, card_ascii in hand]
+    
+    for i in range(len(card_rows[0])):
+        print('  '.join(row[i] for row in card_rows))
+
+def display_initial_dealer_hand(hand):
+    """Display the dealer's first card and a blank card."""
+    card_ascii = hand[0][1]  # The actual card's ASCII representation
+    blank_card_ascii = get_blank_card_ascii()  # The blank card's ASCII representation
+    
+    actual_card_rows = card_ascii.split('\n')
+    blank_card_rows = blank_card_ascii.split('\n')
+    
+    for i in range(len(actual_card_rows)):
+        print(actual_card_rows[i] + '  ' + blank_card_rows[i])
+
+def play_game(session, user, bet):
+    # Deal initial cards
+    user_hand = [deal_cards(), deal_cards()]
+    computer_hand = [deal_cards(), deal_cards()]
+
+    # Calculate initial scores
+    user_score = calculate_scores([card_value for card_value, _ in user_hand])
+    computer_score = calculate_scores([card_value for card_value, _ in computer_hand])
+
+    # Display user hand and dealer's initial hand with one card hidden
+    print(f"Your score is {user_score}, and your hand is:")
+    display_hand(user_hand)
+
+    print("Dealer's hand:")
+    display_initial_dealer_hand(computer_hand)
+
+    # User's turn
+    is_game_over = False
+    while not is_game_over:
+        user_score = calculate_scores([card_value for card_value, _ in user_hand])
+        if user_score > 21:
+            print("Bust! Your score is over 21.")
+            is_game_over = True
+        else:
+            hit = input("Do you want to hit? (y/n): ")
+            if hit.lower() == 'y':
+                user_hand.append(deal_cards())
+                user_score = calculate_scores([card_value for card_value, _ in user_hand])
+                print(f"Your new score is {user_score}, and your hand is:")
+                display_hand(user_hand)
+            else:
+                is_game_over = True
+
+    # Dealer's turn
+    print("Dealer's hand revealed:")
+    display_hand(computer_hand)
+    while computer_score < 17:
+        computer_hand.append(deal_cards())
+        computer_score = calculate_scores([card_value for card_value, _ in computer_hand])
+
+    # Final comparison
+    print(compare(user_score, computer_score, bet, user, session))
+    print("Your final hand is:")
+    display_hand(user_hand)
+    print("Dealer's final hand is:")
+    display_hand(computer_hand)
+
 def blackjack(session, user):
     print('''Thanks for playing
 
@@ -141,125 +243,34 @@ def blackjack(session, user):
           `------'                           |__/           
 
     ''')
+
     print(f'Your balance: {user.balance}')
     bet = input('How much do you want to bet? ')
     while not bet.isdigit():
-        print("Invalid bet, please enter a number")
+        print("Invalid bet, please enter a number.")
         bet = input('How much do you want to bet? ')
-    if int(bet) > int(user.balance):
+
+    bet = int(bet)
+    if bet > user.balance:
         print("Insufficient balance!")
-        time.sleep(1) 
-        return
+        time.sleep(1)
+    else:
+        play_game(session, user, bet)
 
-    def deal_cards():
-        """Returns a card from the deck"""
-        card_rank = random.choice(list(CARDS.keys()))
-        card_value, card_ascii = CARDS[card_rank]
-        return card_value, card_ascii
+    # After the game concludes, you can then ask if they want to play again
+    play_again_response = input("Do you want to play Blackjack again? (y/n): ")
+    while play_again_response == 'y':
+        print(f'Your balance: {user.balance}')
+        bet = input('How much do you want to bet? ')
+        while not bet.isdigit():
+            print("Invalid bet, please enter a number.")
+            bet = input('How much do you want to bet? ')
 
-    def calculate_scores(cards):
-        """Calculates scores for a given array of cards"""
-        if 11 in cards and sum(cards) > 21:
-            cards.remove(11)
-            cards.append(1)
-        return sum(cards)
-
-    def compare(user_score, computer_score):
-        if user_score == computer_score:
-            return "Its a push!"
-        elif computer_score == 0 or computer_score == 21:
-            print(f"You lost ${bet}.")
-            user_balance = int(user.balance) - int(bet)
-            print(user_balance)
-            print(f"Your new balance is ${user_balance}")
-            user.balance = user_balance
-            session.commit()
-            return "User lost, Computer has a blackjack"
-
-        elif user_score == 0 or user_score == 21:
-            user_balance = int(bet)*2 + int(user.balance)
-            print(f"Your new balance is ${user_balance}")
-            user.balance = user_balance
-            session.commit() 
-            return "User won, you have a blackjack"
-
-        elif user_score > 21:
-            print(f"You lost ${bet}.")
-            user_balance = int(user.balance) - int(bet)
-            print(user_balance)
-            print(f"Your new balance is ${user_balance}")
-            user.balance = user_balance
-            session.commit()
-            return "You bust! The computer wins!"
-
-        elif computer_score > 21:
-            user_balance = int(bet)*2 + int(user.balance)
-            print(f"Your new balance is ${user_balance}")
-            user.balance = user_balance
-            session.commit() 
-            return "The computer busts! User Wins!"
-
-        elif user_score > computer_score:
-            user_balance = int(bet)*2 + int(user.balance)
-            print(f"Your new balance is ${user_balance}")
-            user.balance = user_balance
-            session.commit()
-            return "The user cards are closer to 21 than the computer, User wins!"
-
+        bet = int(bet)
+        if bet > user.balance:
+            print("Insufficient balance!")
+            time.sleep(1)
         else:
-            print(f"You lost ${bet}.")
-            user_balance = int(user.balance) - int(bet)
-            print(user_balance)
-            print(f"Your new balance is ${user_balance}")
-            user.balance = user_balance
-            session.commit()
+            play_game(session, user, bet)
 
-    def play_game():
-        print('')
-        user_hand = []
-        computer_hand = []
-        is_game_over = False
-        for _ in range(2):
-            card_value, card_ascii = deal_cards()
-            user_hand.append((card_value, card_ascii))
-            card_value, card_ascii = deal_cards()
-            computer_hand.append((card_value, card_ascii))
-
-        while not is_game_over:
-            user_score = calculate_scores([card_value for card_value, _ in user_hand])
-            computer_score = calculate_scores([card_value for card_value, _ in computer_hand])
-            print(f"The user score is {user_score}, and the user hand is:")
-            display_hand(user_hand)
-            print(f"The computer first card is:")
-            print(computer_hand[0][1])
-
-            if user_score > 21 or computer_score > 21:
-                is_game_over = True
-            else:
-                hit = input("Do you want to hit? (y/n): ")
-                if hit == 'y':
-                    card_value, card_ascii = deal_cards()
-                    user_hand.append((card_value, card_ascii))
-                else:
-                    is_game_over = True
-            
-        while computer_score < 17:
-            card_value, card_ascii = deal_cards()
-            computer_hand.append((card_value, card_ascii))
-            computer_score = calculate_scores([card_value for card_value, _ in computer_hand])
-
-        print(compare(user_score, computer_score))
-        print(f"The user final hand is:")
-        display_hand(user_hand)
-        print(f"The computer final hand is:")
-        display_hand(computer_hand)
-
-    def display_hand(hand):
-        """Display the hand with ASCII art side by side"""
-        card_rows = [card_ascii.split('\n') for _, card_ascii in hand]
-        
-        for i in range(len(card_rows[0])):
-            print('  '.join(row[i] for row in card_rows))
-
-    while input("Do you want to play Blackjack? (y/n): ") == "y":
-        play_game()
+        play_again_response = input("Do you want to play Blackjack again? (y/n): ")
